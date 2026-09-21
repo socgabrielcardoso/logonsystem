@@ -299,7 +299,8 @@ input:focus {
 }
 
 .metric,
-.telemetry-card {
+.telemetry-card,
+.detection-card {
   border: 1px solid var(--line);
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -332,10 +333,73 @@ input:focus {
   line-height: 1.4;
 }
 
-.telemetry-card {
+.telemetry-card,
+.detection-card {
   margin-top: 14px;
   border-radius: 20px;
   overflow: hidden;
+}
+
+.detection-card {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(15, 31, 50, 0.94), rgba(8, 18, 32, 0.92));
+  box-shadow: var(--shadow);
+}
+
+.findings {
+  display: grid;
+  gap: 10px;
+  padding: 16px 20px 20px;
+}
+
+.finding {
+  border: 1px solid rgba(148, 180, 215, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.finding-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.finding-heading strong {
+  color: var(--text);
+  font-size: 0.84rem;
+}
+
+.finding-heading code {
+  color: var(--blue);
+  font-size: 0.7rem;
+}
+
+.finding pre {
+  margin: 10px 0 0;
+  overflow: auto;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.finding-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.telemetry-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.compact-button {
+  padding: 8px 10px;
+  font-size: 0.74rem;
 }
 
 .section-title {
@@ -452,5 +516,19 @@ td { color: #b9c9d8; }
   .header-actions {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .telemetry-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .telemetry-actions .secondary {
+    flex: 1;
+  }
+
+  .finding-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
