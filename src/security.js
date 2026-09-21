@@ -1,3 +1,4 @@
+import { inspectPassword } from "./password-policy.js";
 import {
   createHmac,
   randomBytes,
@@ -18,7 +19,7 @@ export function isValidEmail(value) {
   return email.length <= 254 && EMAIL_PATTERN.test(email);
 }
 
-export function validatePassword(password) {
+export function validatePassword(password, identity = "") {
   const value = String(password || "");
   const checks = {
     length: value.length >= 12 && value.length <= 128,
@@ -29,9 +30,12 @@ export function validatePassword(password) {
     noSpaces: !/\s/.test(value)
   };
 
+  const advanced = inspectPassword(value, identity);
+
   return {
-    valid: Object.values(checks).every(Boolean),
-    checks
+    valid: Object.values(checks).every(Boolean) && advanced.acceptable,
+    checks,
+    advanced
   };
 }
 
