@@ -9,6 +9,10 @@ const registerPassword = document.querySelector("#registerPassword");
 const logoutButton = document.querySelector("#logoutButton");
 const scopeControl = document.querySelector("#scopeControl");
 const eventRows = document.querySelector("#eventRows");
+const findingRows = document.querySelector("#findingRows");
+const detectionSeverity = document.querySelector("#detectionSeverity");
+const exportJsonButton = document.querySelector("#exportJsonButton");
+const exportCefButton = document.querySelector("#exportCefButton");
 
 let csrfToken = "";
 let currentUser = null;
@@ -167,6 +171,52 @@ function renderEvents(events) {
   }
 }
 
+function renderFindings(detections) {
+  const findings = detections?.findings || [];
+  findingRows.replaceChildren();
+
+  detectionSeverity.className = "badge " + (detections?.severity || "info");
+  detectionSeverity.textContent = detections?.severity || "info";
+
+  if (!findings.length) {
+    const empty = document.createElement("p");
+    empty.className = "finding-empty";
+    empty.textContent = "No suspicious authentication pattern detected.";
+    findingRows.appendChild(empty);
+    return;
+  }
+
+  for (const finding of findings) {
+    const article = document.createElement("article");
+    article.className = "finding";
+
+    const heading = document.createElement("div");
+    heading.className = "finding-heading";
+
+    const title = document.createElement("strong");
+    title.textContent = finding.title;
+
+    const rule = document.createElement("code");
+    rule.textContent = finding.rule;
+
+    heading.append(title, rule);
+
+    const evidence = document.createElement("pre");
+    evidence.textContent = JSON.stringify(finding.evidence, null, 2);
+
+    article.append(heading, evidence);
+    findingRows.appendChild(article);
+  }
+}
+
+function triggerExport(format) {
+  const params = new URLSearchParams({
+    scope: currentScope,
+    format
+  });
+  window.location.assign("/api/export?" + params.toString());
+}
+
 async function loadTelemetry(scope = currentScope) {
   const payload = await api("/api/telemetry?scope=" + encodeURIComponent(scope));
   currentScope = payload.scope;
@@ -180,6 +230,7 @@ async function loadTelemetry(scope = currentScope) {
   });
 
   renderEvents(payload.events);
+  renderFindings(payload.detections);
 }
 
 loginTab.addEventListener("click", () => setMode("login"));
@@ -251,6 +302,9 @@ logoutButton.addEventListener("click", async () => {
     setStatus("Session closed.", "success");
   }
 });
+
+exportJsonButton.addEventListener("click", () => triggerExport("jsonl"));
+exportCefButton.addEventListener("click", () => triggerExport("cef"));
 
 scopeControl.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-scope]");
