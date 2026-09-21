@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Blue Team authentication lab with secure sign in telemetry and defensive identity controls.">
+  <title>LogonSystem | Blue Team Identity Lab</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="shell">
+    <section class="auth-panel" id="authPanel">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">LS</div>
+        <div>
+          <p class="eyebrow">BLUE TEAM IDENTITY LAB</p>
+          <h1>LogonSystem</h1>
+        </div>
+      </div>
+
+      <div class="security-strip" aria-label="Security controls">
+        <span>Secure session</span>
+        <span>Password hashing</span>
+        <span>Lockout detection</span>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Authentication mode">
+        <button class="tab active" id="loginTab" type="button" role="tab" aria-selected="true">Sign in</button>
+        <button class="tab" id="registerTab" type="button" role="tab" aria-selected="false">Create account</button>
+      </div>
+
+      <form id="loginForm" class="form" autocomplete="on">
+        <label>
+          Email
+          <input id="loginEmail" name="email" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          Password
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="primary" type="submit">Authenticate</button>
+      </form>
+
+      <form id="registerForm" class="form hidden" autocomplete="on">
+        <label>
+          Name
+          <input id="registerName" name="displayName" type="text" minlength="2" maxlength="60" autocomplete="name" required>
+        </label>
+        <label>
+          Email
+          <input id="registerEmail" name="email" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          Password
+          <input id="registerPassword" name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+        </label>
+
+        <div class="policy" id="passwordPolicy" aria-live="polite">
+          <span data-check="length">12 to 128 characters</span>
+          <span data-check="uppercase">Uppercase letter</span>
+          <span data-check="lowercase">Lowercase letter</span>
+          <span data-check="number">Number</span>
+          <span data-check="special">Special character !@#$%</span>
+          <span data-check="noSpaces">No spaces</span>
+        </div>
+
+        <button class="primary" type="submit">Create secure account</button>
+      </form>
+
+      <p class="status" id="authStatus" role="status" aria-live="polite"></p>
+
+      <div class="focus-note">
+        <strong>Project focus</strong>
+        <p>Registration, sign in and logout with defensive telemetry for identity events.</p>
+      </div>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard">
+      <header class="dashboard-header">
+        <div class="brand compact">
+          <div class="brand-mark" aria-hidden="true">LS</div>
+          <div>
+            <p class="eyebrow">IDENTITY DEFENSE CONSOLE</p>
+            <h2 id="welcomeName">Authenticated</h2>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="role-badge" id="roleBadge">user</span>
+          <button class="secondary" id="logoutButton" type="button">Logout</button>
+        </div>
+      </header>
+
+      <div class="posture">
+        <article class="metric">
+          <p>Session posture</p>
+          <strong class="good">Protected</strong>
+          <small>HttpOnly cookie and SameSite Strict</small>
+        </article>
+        <article class="metric">
+          <p>Failed sign ins, 24h</p>
+          <strong id="failedLogins">0</strong>
+          <small>Identity failures linked to this view</small>
+        </article>
+        <article class="metric">
+          <p>Blocked sign ins, 24h</p>
+          <strong id="blockedLogins">0</strong>
+          <small>Lockout control activations</small>
+        </article>
+        <article class="metric">
+          <p>Maximum risk, 24h</p>
+          <strong id="maxRisk">0</strong>
+          <small>Event score from 0 to 100</small>
+        </article>
+      </div>
+
+      <section class="telemetry-card">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">AUTHENTICATION TELEMETRY</p>
+            <h3>Recent identity events</h3>
+          </div>
+          <div class="scope-control hidden" id="scopeControl">
+            <button class="scope active" data-scope="self" type="button">My account</button>
+            <button class="scope" data-scope="all" type="button">All events</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>Outcome</th>
+                <th>Severity</th>
+                <th>Risk</th>
+                <th>Source fingerprint</th>
+              </tr>
+            </thead>
+            <tbody id="eventRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
