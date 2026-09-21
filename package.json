@@ -1,0 +1,23 @@
+{
+  "name": "logonsystem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Blue Team authentication lab focused on secure registration, login, logout, session hardening and identity threat telemetry.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0"
+  }
+}
