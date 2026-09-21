@@ -117,11 +117,28 @@
         </article>
       </div>
 
+      <section class="detection-card">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">DETECTION ENGINE</p>
+            <h3>Credential attack findings</h3>
+          </div>
+          <span class="badge info" id="detectionSeverity">info</span>
+        </div>
+        <div class="findings" id="findingRows">
+          <p class="finding-empty">No suspicious authentication pattern detected.</p>
+        </div>
+      </section>
+
       <section class="telemetry-card">
         <div class="section-title">
           <div>
             <p class="eyebrow">AUTHENTICATION TELEMETRY</p>
             <h3>Recent identity events</h3>
+          </div>
+          <div class="telemetry-actions">
+            <button class="secondary compact-button" id="exportJsonButton" type="button">Export JSONL</button>
+            <button class="secondary compact-button" id="exportCefButton" type="button">Export CEF</button>
           </div>
           <div class="scope-control hidden" id="scopeControl">
             <button class="scope active" data-scope="self" type="button">My account</button>
