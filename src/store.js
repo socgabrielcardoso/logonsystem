@@ -129,18 +129,25 @@ export const store = {
 
   eventsForUser(userId, limit = 40) {
     return db.prepare(
-      "SELECT id, event_type, outcome, severity, risk_score, ip_hash, user_agent, details, created_at " +
+      "SELECT id, identity_hash, event_type, outcome, severity, risk_score, ip_hash, user_agent, details, created_at " +
       "FROM auth_events WHERE user_id = ? ORDER BY created_at DESC LIMIT ?"
     ).all(userId, limit);
   },
 
   eventsAll(limit = 80) {
     return db.prepare(
-      "SELECT e.id, e.user_id, u.display_name, u.email, e.event_type, e.outcome, " +
+      "SELECT e.id, e.user_id, u.display_name, u.email, e.identity_hash, e.event_type, e.outcome, " +
       "e.severity, e.risk_score, e.ip_hash, e.user_agent, e.details, e.created_at " +
       "FROM auth_events e LEFT JOIN users u ON u.id = e.user_id " +
       "ORDER BY e.created_at DESC LIMIT ?"
     ).all(limit);
+  },
+
+  recentEventsSince(sinceIso, limit = 250) {
+    return db.prepare(
+      "SELECT id, user_id, identity_hash, event_type, outcome, severity, risk_score, ip_hash, user_agent, details, created_at " +
+      "FROM auth_events WHERE created_at >= ? ORDER BY created_at ASC LIMIT ?"
+    ).all(sinceIso, limit);
   },
 
   overviewForUser(userId, sinceIso) {
