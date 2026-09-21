@@ -4,6 +4,10 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { config } from "./config.js";
 import { store } from "./store.js";
+import { analyzeAuthWindow, highestFindingSeverity } from "./detection.js";
+import { eventsToCef, eventsToJsonLines } from "./exporters.js";
+import { healthSnapshot } from "./health.js";
+import { assessSessionContext, shouldTerminateSession } from "./session-risk.js";
 import {
   eventSeverity,
   hashIdentity,
@@ -146,6 +150,7 @@ function parseEvent(row) {
     userId: row.user_id,
     displayName: row.display_name,
     email: row.email,
+    identityHash: row.identity_hash,
     type: row.event_type,
     outcome: row.outcome,
     severity: row.severity,
@@ -201,7 +206,33 @@ export function createApp() {
       return next();
     }
 
+    const requestContext = clientContext(req);
+    const assessment = assessSessionContext({
+      sessionIpHash: session.session_ip_hash,
+      requestIpHash: requestContext.ipHash,
+      sessionUserAgent: session.session_user_agent,
+      requestUserAgent: requestContext.userAgent
+    });
+
+    if (shouldTerminateSession(assessment)) {
+      req.auth = session;
+      recordEvent({
+        req,
+        userId: session.user_id,
+        email: session.email,
+        eventType: "SESSION_ANOMALY",
+        outcome: "blocked",
+        context: { locked: true },
+        details: assessment.signals
+      });
+      store.deleteSession(sessionId);
+      clearSessionCookie(res);
+      req.auth = null;
+      return next();
+    }
+
     req.auth = session;
+    req.sessionAssessment = assessment;
     next();
   });
 
@@ -222,7 +253,8 @@ export function createApp() {
   });
 
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+    const snapshot = healthSnapshot();
+    res.status(snapshot.status === "ok" ? 200 : 503).json(snapshot);
   });
 
   app.get("/api/session", (req, res) => {
@@ -236,7 +268,8 @@ export function createApp() {
       csrfToken: req.auth.csrf_token,
       session: {
         createdAt: req.auth.session_created_at,
-        expiresAt: req.auth.session_expires_at
+        expiresAt: req.auth.session_expires_at,
+        risk: req.sessionAssessment || { suspicious: false, score: 0, signals: {} }
       }
     });
   });
@@ -246,7 +279,7 @@ export function createApp() {
       const displayName = String(req.body?.displayName || "").trim();
       const email = normalizeEmail(req.body?.email);
       const password = String(req.body?.password || "");
-      const policy = validatePassword(password);
+      const policy = validatePassword(password, email);
 
       if (displayName.length < 2 || displayName.length > 60) {
         return res.status(400).json({ error: "Name must contain 2 to 60 characters." });
@@ -441,8 +474,42 @@ export function createApp() {
         blockedLogins: Number(overview.blocked_logins || 0),
         maxRisk: Number(overview.max_risk || 0)
       },
-      events: rows.map(parseEvent)
+      events: rows.map(parseEvent),
+      detections: (() => {
+        const parsed = rows.map(parseEvent);
+        const findings = analyzeAuthWindow(parsed);
+        return {
+          severity: highestFindingSeverity(findings),
+          findings
+        };
+      })()
     });
+  });
+
+  app.get("/api/export", requireAuth, (req, res) => {
+    const wantsGlobal = req.query.scope === "all";
+    const isAdmin = req.auth.role === "blue_team_admin";
+    const globalScope = wantsGlobal && isAdmin;
+    const format = String(req.query.format || "jsonl").toLowerCase();
+
+    const rows = globalScope
+      ? store.eventsAll(250)
+      : store.eventsForUser(req.auth.user_id, 250);
+
+    const events = rows.map(parseEvent).map((event) => ({
+      ...event,
+      identityHash: event.identityHash || "unknown"
+    }));
+
+    if (format === "cef") {
+      res.type("text/plain");
+      res.setHeader("Content-Disposition", 'attachment; filename="logonsystem-events.cef"');
+      return res.send(eventsToCef(events));
+    }
+
+    res.type("application/x-ndjson");
+    res.setHeader("Content-Disposition", 'attachment; filename="logonsystem-events.jsonl"');
+    return res.send(eventsToJsonLines(events));
   });
 
   app.use(express.static("public", {
