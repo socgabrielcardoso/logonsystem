@@ -2,7 +2,7 @@
   "name": "logonsystem",
   "version": "1.1.0",
   "private": true,
-  "description": "Blue Team authentication lab focused on secure registration, login, logout, session hardening and identity threat telemetry.",
+  "description": "Authentication-focused application for studying login flows, validation, sessions and secure application structure.",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
@@ -22,11 +22,11 @@
     "helmet": "^8.1.0"
   },
   "keywords": [
-    "blue-team",
     "authentication",
-    "identity-security",
-    "soc",
-    "telemetry",
-    "cybersecurity"
-  ]
+    "security",
+    "nodejs",
+    "sessions",
+    "validation"
+  ],
+  "author": "Gabriel de Lima Cardoso"
 }
