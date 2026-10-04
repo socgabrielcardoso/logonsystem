@@ -1,17 +1,23 @@
-# Project Profile
+# Logon System — notas do projeto
 
-**Logon System** is an authentication-focused application used to study login flows, validation, session behavior and secure application structure.
+## Finalidade
 
-## What this project demonstrates
-- Authentication-flow implementation
-- Environment-based configuration
-- Separation between public and application source code
-- Automated test structure
-- Security-minded application design
+Aplicação pequena para estudar autenticação web sem esconder a parte de segurança atrás de frameworks maiores.
 
-## Portfolio signal
-The project acts as a practical authentication laboratory and complements the broader IAM-focused work in the portfolio.
+## Componentes
 
-**Domain:** Authentication, Application Security  
-**Stack:** Node.js, JavaScript  
-**Status:** Technical study project
+- Express 5;
+- SQLite;
+- sessão e cookies;
+- rate limiting;
+- headers com Helmet;
+- configuração por ambiente;
+- testes com Node Test Runner.
+
+## Pontos de atenção
+
+O projeto trata login como uma fronteira de segurança. Isso inclui não só validar usuário e senha, mas também controlar tentativa repetida, sessão, logout, mensagens de erro, configuração e registro de eventos.
+
+## Escopo
+
+Estudo local de Authentication e Application Security.
