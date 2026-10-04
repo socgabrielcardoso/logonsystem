@@ -1,5 +1,15 @@
-# Portfolio Positioning
+# Por que este projeto existe
 
-Logon System demonstrates that a small authentication application can still be engineered with security discipline.
+Exemplo de login normalmente para na validação de usuário e senha. Aqui eu quis incluir o que vem depois e o que costuma dar problema:
 
-The portfolio value is in explicit threat modeling, session design, negative testing, secret handling and auditable decisions—not in presenting a login screen as a complete identity platform.
+- rate limiting;
+- sessão;
+- cookie;
+- logout;
+- headers;
+- configuração;
+- mensagens de erro;
+- registro de eventos;
+- testes negativos.
+
+O projeto continua pequeno de propósito. Assim dá para acompanhar o fluxo inteiro sem esconder a lógica de autenticação atrás de muita abstração.
