@@ -57,3 +57,15 @@ npm run check
 ## Segurança
 
 O repositório não deve conter senhas, tokens, cookies de sessão ou dados reais. Os exemplos existem apenas para estudo local.
+
+## Segurança verificável e evidências
+
+A segurança deste projeto é tratada como processo contínuo, **não como promessa de software invulnerável**:
+
+- [Registro de riscos e superfície de ataque](docs/SECURITY_RISK_REGISTER.md)
+- [Plano reproduzível de testes](docs/SECURITY_VALIDATION_PLAN.md)
+- [Guia de implantação segura](docs/SECURE_DEPLOYMENT.md)
+- [Resposta a incidentes e recuperação](docs/INCIDENT_PLAYBOOK.md)
+- [Evidências e estudo de caso para portfólio](docs/PORTFOLIO_EVIDENCE.md)
+
+O workflow `.github/workflows/security-guard.yml` detecta classes de credenciais expostas em arquivos rastreados e executa testes regressivos do detector. **Não substitui SAST, DAST, pentest, proteção de branch, autenticação, revisão humana nem varredura completa do histórico Git.** Verifique o status do CI na revisão que pretende publicar. Use somente dados sintéticos em demonstrações públicas.
