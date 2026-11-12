@@ -6,6 +6,7 @@ const COMMON_PATTERNS = [
   "admin",
   "administrator",
   "letmein",
+  "iloveyou", 
   "welcome",
   "123456",
   "company",
