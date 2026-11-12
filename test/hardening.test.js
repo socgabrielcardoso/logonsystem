@@ -16,3 +16,7 @@ test("Detect predictable asdf keyboard walks", () => {
   assert.equal(inspectPassword("A1!asdfghRandom").flags.commonPattern, true);
 });
 
+test("Detect common iloveyou word fragments", () => {
+  assert.equal(inspectPassword("A1!iloveyouRandom").flags.commonPattern, true);
+});
+
