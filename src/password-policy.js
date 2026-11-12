@@ -17,7 +17,8 @@ function hasLongRepeat(value) {
 
 function hasSequence(value) {
   const normalized = value.toLowerCase();
-  const sequences = ["0123456789", "abcdefghijklmnopqrstuvwxyz", "qwertyuiop"];
+  const bases = ["0123456789", "abcdefghijklmnopqrstuvwxyz", "qwertyuiop"];
+  const sequences = [...bases, ...bases.map((sequence) => [...sequence].reverse().join(""))];
   return sequences.some((sequence) => {
     for (let index = 0; index <= sequence.length - 5; index += 1) {
       if (normalized.includes(sequence.slice(index, index + 5))) return true;
