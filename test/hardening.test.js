@@ -12,3 +12,7 @@ test("Reject reversed alphabet sequences", () => {
   assert.equal(inspectPassword("A1!zyxwvRandom").flags.sequentialCharacters, true);
 });
 
+test("Detect predictable asdf keyboard walks", () => {
+  assert.equal(inspectPassword("A1!asdfghRandom").flags.commonPattern, true);
+});
+
