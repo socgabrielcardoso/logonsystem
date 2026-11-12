@@ -2,6 +2,7 @@ const COMMON_PATTERNS = [
   "password",
   "senha",
   "qwerty",
+  "asdfgh", 
   "admin",
   "administrator",
   "letmein",
