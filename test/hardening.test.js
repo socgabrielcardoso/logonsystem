@@ -32,3 +32,7 @@ test("Bound event payload attributes to 32", () => {
   const meta=Object.fromEntries(Array.from({length:40},(_,i)=>["key"+i,i])); assert.equal(Object.keys(normalizeEventDetails(meta)).length,32);
 });
 
+test("Reject prototype names and handle absent session context", () => {
+  const malicious=JSON.parse('{"__proto__": "poison", "constructor": "bad", "safe": 1}'); const normalized=normalizeEventDetails(malicious); assert.deepEqual(normalized,{safe:1}); assert.equal(assessSessionContext().score,0);
+});
+
