@@ -30,6 +30,7 @@ export function normalizeEventDetails(details = {}) {
   const safe = {};
   if (!details || typeof details !== "object" || Array.isArray(details)) return safe;
   for (const [key, value] of Object.entries(details).slice(0, 32)) {
+    if (["__proto__", "constructor", "prototype"].includes(key)) continue;
     if (value === undefined) continue;
     if (typeof value === "string") safe[key] = value.slice(0, 240);
     else if (typeof value === "number" || typeof value === "boolean" || value === null) safe[key] = value;
