@@ -28,3 +28,7 @@ test("Reject null event metadata without throwing", () => {
   assert.deepEqual(normalizeEventDetails(null), {});
 });
 
+test("Bound event payload attributes to 32", () => {
+  const meta=Object.fromEntries(Array.from({length:40},(_,i)=>["key"+i,i])); assert.equal(Object.keys(normalizeEventDetails(meta)).length,32);
+});
+
