@@ -8,3 +8,7 @@ test("Reject reversed numeric password sequences", () => {
   assert.equal(inspectPassword("A1!9876543Random").flags.sequentialCharacters, true);
 });
 
+test("Reject reversed alphabet sequences", () => {
+  assert.equal(inspectPassword("A1!zyxwvRandom").flags.sequentialCharacters, true);
+});
+
