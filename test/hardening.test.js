@@ -20,3 +20,7 @@ test("Detect common iloveyou word fragments", () => {
   assert.equal(inspectPassword("A1!iloveyouRandom").flags.commonPattern, true);
 });
 
+test("Normalize identity whitespace before checking password leakage", () => {
+  assert.equal(inspectPassword("Analyst!Unique2026", "  analyst@example.org  ").flags.containsIdentity, true);
+});
+
