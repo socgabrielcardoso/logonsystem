@@ -32,7 +32,7 @@ function hasSequence(value) {
 export function inspectPassword(password, identity = "") {
   const value = String(password || "");
   const normalized = value.toLowerCase();
-  const identityLocal = String(identity || "").toLowerCase().split("@")[0];
+  const identityLocal = String(identity ?? "").trim().normalize("NFKC").toLowerCase().split("@")[0];
   const flags = {
     commonPattern: COMMON_PATTERNS.some((pattern) => normalized.includes(pattern)),
     repeatedCharacters: hasLongRepeat(value),
