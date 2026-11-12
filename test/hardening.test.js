@@ -24,3 +24,7 @@ test("Normalize identity whitespace before checking password leakage", () => {
   assert.equal(inspectPassword("Analyst!Unique2026", "  analyst@example.org  ").flags.containsIdentity, true);
 });
 
+test("Reject null event metadata without throwing", () => {
+  assert.deepEqual(normalizeEventDetails(null), {});
+});
+
