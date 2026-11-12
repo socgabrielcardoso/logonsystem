@@ -28,6 +28,7 @@ export function isKnownSeverity(value) {
 
 export function normalizeEventDetails(details = {}) {
   const safe = {};
+  if (!details || typeof details !== "object" || Array.isArray(details)) return safe;
   for (const [key, value] of Object.entries(details)) {
     if (value === undefined) continue;
     if (typeof value === "string") safe[key] = value.slice(0, 240);
