@@ -3,7 +3,7 @@ export function assessSessionContext({
   requestIpHash,
   sessionUserAgent,
   requestUserAgent
-}) {
+} = {}) {
   const ipChanged = Boolean(sessionIpHash && requestIpHash && sessionIpHash !== requestIpHash);
   const userAgentChanged = Boolean(
     sessionUserAgent &&
